@@ -34,6 +34,8 @@ form.addEventListener('submit', async (e) => {
             const data = await response.json();
             messageDiv.textContent = data.message;
             messageDiv.classList.add('success');
+            // Store the JWT token in localStorage
+            localStorage.setItem('access_token', data.access_token);
             // Redirect to notebook interface after successful login
             window.location.href = "/user/me/main";
         } else {

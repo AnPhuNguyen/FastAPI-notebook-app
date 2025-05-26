@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -6,6 +7,14 @@ import user_utils as utils
 import re
 # ------------------------------initialize the app + user base models--------------------------------
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class LoginRequest(BaseModel):
     info: str #either username or email
@@ -147,8 +156,10 @@ def isEmailValid(email:str):
     return bool(x)
 
 # 2) notebook >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+from fastapi import Depends
+
 @app.get("/user/me/main")
-async def screen():
+async def screen(current_user: user = Depends(get_current_user)):
     return FileResponse("static/notebook_app.html")
 
 if __name__ == "__main__":
